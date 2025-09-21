@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// GET /projects
+
 app.get('/api/projects', async (req, res) => {
   try{
     const rows = await db.all('SELECT * FROM projects ORDER BY id DESC');
@@ -15,12 +15,12 @@ app.get('/api/projects', async (req, res) => {
   }catch(err){ res.status(500).json({error: err.message}); }
 });
 
-// GET /projects/:id
+
 app.get('/api/projects/:id', async (req,res)=>{
   try{ const id = req.params.id; const row = await db.get('SELECT * FROM projects WHERE id = ?', [id]); if(!row) return res.status(404).json({error:'Not found'}); row.tags = row.tags ? JSON.parse(row.tags) : []; res.json(row);}catch(err){res.status(500).json({error:err.message});}
 });
 
-// POST /projects
+
 app.post('/api/projects', async (req,res)=>{
   try{
     const {title, description, tags, link, date} = req.body;
@@ -32,7 +32,7 @@ app.post('/api/projects', async (req,res)=>{
   }catch(err){ res.status(500).json({error:err.message}); }
 });
 
-// PUT /projects/:id
+
 app.put('/api/projects/:id', async (req,res)=>{
   try{
     const id = req.params.id; const {title,description,tags,link,date} = req.body;
@@ -43,12 +43,12 @@ app.put('/api/projects/:id', async (req,res)=>{
   }catch(err){res.status(500).json({error:err.message});}
 });
 
-// DELETE /projects/:id
+
 app.delete('/api/projects/:id', async (req,res)=>{
   try{ const id = req.params.id; await db.run('DELETE FROM projects WHERE id=?',[id]); res.json({ok:true}); }catch(err){res.status(500).json({error:err.message});}
 });
 
-// Simple health
+
 app.get('/api/health', (req,res)=>res.json({ok:true}));
 
 const PORT = process.env.PORT || 4000;
